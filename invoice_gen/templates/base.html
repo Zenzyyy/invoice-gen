@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Invoice {{ invoice.number }}</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: #fff; font-family: 'Inter', 'Helvetica Neue', Arial, sans-serif; color: #16161a; }
+  .page { width: 1240px; min-height: 1754px; margin: 0 auto; background: #fff; padding: 110px 110px 90px; display: flex; flex-direction: column; }
+  .top { display: flex; justify-content: space-between; align-items: flex-start; }
+  .brand { font-size: 46px; font-weight: 700; letter-spacing: -1.5px; }
+  .brand span { color: #8a8a93; font-weight: 500; }
+  .sub { margin-top: 10px; font-size: 20px; color: #6b6b74; line-height: 1.6; }
+  .title { text-align: right; }
+  .title h1 { font-size: 72px; font-weight: 700; letter-spacing: 6px; }
+  .title .no { margin-top: 8px; font-size: 22px; color: #6b6b74; letter-spacing: 1px; }
+  .rule { height: 4px; background: #16161a; margin: 70px 0 60px; }
+  .meta { display: flex; justify-content: space-between; gap: 60px; }
+  .label { font-size: 15px; font-weight: 600; letter-spacing: 2.5px; color: #8a8a93; text-transform: uppercase; margin-bottom: 14px; }
+  .meta .val { font-size: 22px; line-height: 1.6; }
+  table { width: 100%; border-collapse: collapse; margin-top: 90px; }
+  th { text-align: left; font-size: 15px; font-weight: 600; letter-spacing: 2.5px; text-transform: uppercase; color: #8a8a93; padding: 0 0 20px; border-bottom: 2px solid #16161a; }
+  th.r, td.r { text-align: right; }
+  td { font-size: 24px; padding: 34px 0; border-bottom: 1px solid #e2e2e6; }
+  td .desc { font-weight: 600; }
+  td .note { font-size: 18px; color: #8a8a93; margin-top: 6px; }
+  .totals { margin-left: auto; width: 460px; margin-top: 40px; }
+  .totals .row { display: flex; justify-content: space-between; font-size: 22px; padding: 12px 0; color: #4b4b53; }
+  .grand { margin-top: 14px; padding: 26px 30px; background: #16161a; color: #fff; display: flex; justify-content: space-between; align-items: center; border-radius: 6px; }
+  .grand .l { font-size: 16px; letter-spacing: 2.5px; text-transform: uppercase; font-weight: 600; }
+  .grand .v { font-size: 38px; font-weight: 700; }
+  .pay { margin-top: 110px; background: #f5f5f7; border-radius: 8px; padding: 46px 50px; display: flex; gap: 80px; }
+  .pay .col { flex: 1; }
+  .line { display: flex; justify-content: space-between; font-size: 21px; padding: 9px 0; }
+  .line span:first-child { color: #6b6b74; }
+  .line span:last-child { font-weight: 600; }
+  .blank { display: inline-block; width: 190px; border-bottom: 2px solid #c4c4cc; height: 22px; }
+  .pay p { font-size: 20px; line-height: 1.65; color: #4b4b53; }
+  .ref { white-space: nowrap; }
+  .foot { margin-top: auto; padding-top: 80px; display: flex; justify-content: space-between; font-size: 18px; color: #8a8a93; }
+  .foot b { color: #16161a; font-weight: 600; }
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="top">
+    <div>
+      <div class="brand">{{ sender.brand }}<span>.</span></div>
+      <div class="sub">{{ sender.tagline }}{% if sender.name %} · {{ sender.name }}{% endif %}<br>{{ sender.email }}{% if sender.website %} · {{ sender.website }}{% endif %}</div>
+    </div>
+    <div class="title">
+      <h1>INVOICE</h1>
+      <div class="no">No. {{ invoice.number }}</div>
+    </div>
+  </div>
+
+  <div class="rule"></div>
+
+  <div class="meta">
+    <div>
+      <div class="label">Billed to</div>
+      <div class="val"><b>{{ client.name }}</b>{% if client.note %}<br>{{ client.note }}{% endif %}</div>
+    </div>
+    <div>
+      <div class="label">Invoice date</div>
+      <div class="val">{{ invoice.date_display }}</div>
+    </div>
+    {% if invoice.due_display %}
+    <div>
+      <div class="label">Due</div>
+      <div class="val">{{ invoice.due_display }}</div>
+    </div>
+    {% endif %}
+    <div>
+      <div class="label">Reference</div>
+      <div class="val">{{ invoice.number }}</div>
+    </div>
+  </div>
+
+  <table>
+    <thead>
+      <tr><th style="width:56%">Description</th><th class="r">Qty</th><th class="r">Rate</th><th class="r">Amount</th></tr>
+    </thead>
+    <tbody>
+      {% for item in items %}
+      <tr>
+        <td><div class="desc">{{ item.description }}</div>{% if item.note %}<div class="note">{{ item.note }}</div>{% endif %}</td>
+        <td class="r">{{ item.qty }}</td>
+        <td class="r">{{ money(item.rate) }}</td>
+        <td class="r">{{ money(item.amount) }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <div class="totals">
+    <div class="row"><span>Subtotal</span><span>{{ money(totals.subtotal) }}</span></div>
+    <div class="row"><span>VAT{% if not totals.vat_rate %} (not registered){% else %} ({{ (totals.vat_rate * 100) | round(0) | int }}%){% endif %}</span><span>{{ money(totals.vat) }}</span></div>
+    <div class="grand"><span class="l">Total due</span><span class="v">{{ money(totals.total) }}</span></div>
+  </div>
+
+  <div class="pay">
+    <div class="col">
+      <div class="label">Payment details</div>
+      <div class="line"><span>Bank</span><span>{{ bank.name }}</span></div>
+      <div class="line"><span>Account name</span><span>{{ bank.account_name }}</span></div>
+      <div class="line"><span>Sort code</span>{% if bank.sort_code %}<span>{{ bank.sort_code }}</span>{% else %}<span class="blank"></span>{% endif %}</div>
+      <div class="line"><span>Account number</span>{% if bank.account_number %}<span>{{ bank.account_number }}</span>{% else %}<span class="blank"></span>{% endif %}</div>
+    </div>
+    <div class="col">
+      <div class="label">Notes</div>
+      <p>Please pay by bank transfer using <b class="ref">{{ invoice.number }}</b> as the payment reference.</p>
+      <p style="margin-top:14px">{{ invoice.footer_note }}</p>
+    </div>
+  </div>
+
+  <div class="foot">
+    <span><b>{{ sender.brand }}</b> · {{ sender.tagline }}</span>
+    <span>{{ sender.website }}</span>
+  </div>
+</div>
+</body>
+</html>
