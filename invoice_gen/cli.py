@@ -2,7 +2,7 @@
 
 Example:
     invoice-gen --client "WLSN" --client-note "YouTube channel" \
-        --item "Full Edit – Premium Package:300" --number ZNZ064
+        --item "Full Edit – Premium Package:300" --number INV-0043
 """
 
 from __future__ import annotations
@@ -37,7 +37,7 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--client-note", default="", help="second line under the client name")
     p.add_argument("--item", action="append", type=parse_item, required=True,
                    help="line item 'description:rate[:qty[:note]]' (repeatable)")
-    p.add_argument("--number", required=True, help="invoice number, e.g. ZNZ064")
+    p.add_argument("--number", required=True, help="invoice number, e.g. INV-0043")
     p.add_argument("--date", type=dt.date.fromisoformat, default=dt.date.today(), help="YYYY-MM-DD (default: today)")
     p.add_argument("--due-days", type=int, default=None, help="payment terms in days (omit for no due date)")
     p.add_argument("--vat", type=Decimal, default=Decimal("0"), help="VAT rate, e.g. 0.2")

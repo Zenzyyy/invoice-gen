@@ -1,6 +1,6 @@
 # invoice-gen
 
-Clean, branded invoices as **PNG or PDF** from one command. Built because I was making freelance invoices by hand and wanted them to look professional every time.
+Clean, branded invoices as **PNG or PDF** from one command.
 
 ![Example invoice](examples/example.png)
 
@@ -30,8 +30,8 @@ invoice-gen \
   --client "Example Client" --client-note "YouTube channel" \
   --item "Full Edit – Premium Package:300:1:Cutting, pacing, sound design, captions and export" \
   --item "Thumbnail:25:2" \
-  --number ZNZ064
-# wrote out/Invoice_ZNZ064.png  (total 350.00)
+  --number INV-0043
+# wrote out/Invoice_INV-0043.png  (total 350.00)
 ```
 
 | Flag | What it does |

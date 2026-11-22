@@ -4,7 +4,7 @@
 currency_symbol = "£"
 
 [sender]
-brand = "01zenzy"
+brand = "Your Brand"
 tagline = "Video Editing"
 name = "Your Name"
 email = "you@example.com"

@@ -47,9 +47,9 @@ def test_parse_item_variants():
 
 
 def test_render_html_contains_key_fields():
-    inv = Invoice(number="ZNZ999", client_name="WLSN", items=[LineItem("Full Edit", Decimal("300"))])
+    inv = Invoice(number="INV-999", client_name="Client Ltd", items=[LineItem("Full Edit", Decimal("300"))])
     html = render_html(inv, CONFIG)
-    assert "ZNZ999" in html and "WLSN" in html and "£300.00" in html
+    assert "INV-999" in html and "Client Ltd" in html and "£300.00" in html
     assert "class=\"blank\"" in html  # bank numbers left blank when not configured
 
 
