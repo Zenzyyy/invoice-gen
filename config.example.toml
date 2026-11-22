@@ -1,0 +1,18 @@
+# Copy to config.toml and fill in. config.toml is git-ignored, so your
+# bank details never end up in the repo.
+
+currency_symbol = "£"
+
+[sender]
+brand = "01zenzy"
+tagline = "Video Editing"
+name = "Your Name"
+email = "you@example.com"
+website = "example.com"
+
+[bank]
+name = "Your Bank"
+account_name = "Your Name"
+# Leave these out to print blank lines instead.
+# sort_code = "00-00-00"
+# account_number = "00000000"
